@@ -33,7 +33,7 @@ In this two-hour-timeboxed assignment, I reviewed the code, came up with a plan 
 - style search bar/reset buttons
 - create mobile-first cards layout and responsible table
 
-3. [ ] Optimization
+3. [x] Optimization
 
 - add debounce logic to save on unnecessary API calls
 
@@ -45,7 +45,7 @@ In this two-hour-timeboxed assignment, I reviewed the code, came up with a plan 
 
 Because of the two-hour time limit, I prioritized high-impact and low-effort changes that would immediately improve functionality and end-user experience:
 
-- client-side filtering vs. server-side search: To get to a working MVP, I left the filtering in the client. With more time, I would have implemented backend pagination and search params to handle larger datasets, so that all advocates wouldn't need to be loaded at once.
+- client-side filtering vs. server-side search: To get to a working MVP, I left the filtering in the client. With more time, I would have implemented backend pagination and search params to handle larger datasets, so that all advocates wouldn't need to be loaded at once. For example I'd refactor to call /api/advocates?search=page=1, so that data could be loaded in segments, instead of all at once.
 - debounce vs. caching: The current implementation filters on debounce of 300ms, while snappy may add unecessary re-rendering and API calls. As I follow-up I would add additional client and server-side caching to address this.
 - Basic UX vs. error handling: I included a basic no-results state, but did not build out a Loading spinner or error messaging, logical future additions.
 
@@ -55,12 +55,13 @@ Because of the two-hour time limit, I prioritized high-impact and low-effort cha
 
 - improved table formatting: adding fixed table width, rather than content-based sizing will prevent columns such as 'specialties' from pushing into the other columns
 - loading and error states: display a loading spinner while data is fetching. Show friendly error messages if API calls fail.
+- Better caching: Introducing client-side caching such as WFR would take care of switching between pages without re-fetching the data, avoiding duplicate calls.
 
 ### Backend
 
 - DB indexing: add an index for common searches in order to provide faster responses and efficient queries.
 - Use materialized views for high-traffic queries.
-- Caching: intorduce Redis for caching of frequently requested searches. Serve cached results for a set period of time and then revalidate.
+- Caching: intorduce Redis for caching of frequently requested searches. Serve cached results for a set period of time and then revalidate. Leverage CDN and edge caching to balance performance and data freshness.
 - DX: Add unit testing, Github actions, ESLint, Typescript checks, even AI reviews for each PR.
 
 With these improvements, the advocates directory could scale and handle thousands of records seamlessly, while remaining a smooth user experience.
