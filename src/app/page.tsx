@@ -17,7 +17,9 @@ export default function Home(): JSX.Element {
   const [advocates, setAdvocates] = useState<Advocate[]>([]);
   const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
 
+  // Fetch advocates data from the API on mount
   useEffect(() => {
     fetch("/api/advocates").then((response) => {
       (response.json() as Promise<{ data: Advocate[] }>).then(
@@ -29,11 +31,25 @@ export default function Home(): JSX.Element {
     });
   }, []);
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const term = e.target.value;
-    setSearchTerm(term);
+  // Debounce the search term to avoid excessive filtering
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300); // Adjust the debounce delay as needed
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
+
+  // Run the filtering logic when the debounced search term changes
+  useEffect(() => {
+    if (debouncedSearchTerm === "") {
+      setFilteredAdvocates(advocates);
+      return;
+    }
+
     const results = advocates.filter((advocate) => {
-      const lowercaseSearchTerm = term.toLowerCase();
+      const lowercaseSearchTerm = debouncedSearchTerm.toLowerCase();
       return (
         advocate.firstName.toLowerCase().includes(lowercaseSearchTerm) ||
         advocate.lastName.toLowerCase().includes(lowercaseSearchTerm) ||
@@ -47,6 +63,11 @@ export default function Home(): JSX.Element {
     });
 
     setFilteredAdvocates(results);
+  }, [debouncedSearchTerm, advocates]);
+
+  // simply update 'searchTerm' state on input change
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
   };
 
   const onClick = () => {
@@ -55,7 +76,7 @@ export default function Home(): JSX.Element {
   };
 
   return (
-    <main className="max-w-screen-2xl mx-auto px-6 py-8 bg-gray">
+    <main className="max-w-screen-2xl mx-auto px-6 py-8 bg-gray-50">
       <h1 className="font-serif text-4xl text-[#00443E] mb-6 mt-6">
         Solace Advocates
       </h1>
@@ -71,7 +92,7 @@ export default function Home(): JSX.Element {
             />
             <button
               onClick={onClick}
-              className="bg-[#00443E] hover:bg-[#007D61] text-white h-10 px-4 py-2 rounded-r-md focus:outline-none focus:ring-2 focus;ring-[#007D61]"
+              className="bg-[#00443E] hover:bg-[#007D61] text-white h-10 px-4 py-2 rounded-r-md focus:outline-none focus:ring-2 focus:ring-[#007D61]"
             >
               Reset
             </button>
@@ -112,7 +133,7 @@ export default function Home(): JSX.Element {
           </div>
         ))}
         {filteredAdvocates.length === 0 && (
-          <div className="p4">
+          <div className="p-4">
             <p className="text-center text-gray-500">No advocates found.</p>
           </div>
         )}

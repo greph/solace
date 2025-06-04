@@ -18,7 +18,7 @@ In this two-hour-timeboxed assignment, I reviewed the code, came up with a plan 
 - [x] List visual improvements w/ Tailwind
 - [x] Find ways to enhance usability and responsiveness
 
-### 3. Code & Commit: 2 separate PRs (~1 hour each)
+### 3. Code & Commit: 3 separate PRs (30 mins - 1hr each)
 
 1. [x] Bug fixes, anti-patterns cleanup
 
@@ -33,6 +33,10 @@ In this two-hour-timeboxed assignment, I reviewed the code, came up with a plan 
 - style search bar/reset buttons
 - create mobile-first cards layout and responsible table
 
+3. [ ] Optimization
+
+- add debounce logic to save on unnecessary API calls
+
 ### 4. Wrap-up
 
 - [x] Write `DISCUSSION.md`
@@ -42,7 +46,7 @@ In this two-hour-timeboxed assignment, I reviewed the code, came up with a plan 
 Because of the two-hour time limit, I prioritized high-impact and low-effort changes that would immediately improve functionality and end-user experience:
 
 - client-side filtering vs. server-side search: To get to a working MVP, I left the filtering in the client. With more time, I would have implemented backend pagination and search params to handle larger datasets, so that all advocates wouldn't need to be loaded at once.
-- responsiveness vs. debouncing: The current implementation filters on each keystorke which, while snappy does add unecessary re-rendering and API calls. As I follow-up I would add ~200ms within a debounce method to address this.
+- debounce vs. caching: The current implementation filters on debounce of 300ms, while snappy may add unecessary re-rendering and API calls. As I follow-up I would add additional client and server-side caching to address this.
 - Basic UX vs. error handling: I included a basic no-results state, but did not build out a Loading spinner or error messaging, logical future additions.
 
 ## Future enhancements
@@ -50,7 +54,6 @@ Because of the two-hour time limit, I prioritized high-impact and low-effort cha
 ### Front-end
 
 - improved table formatting: adding fixed table width, rather than content-based sizing will prevent columns such as 'specialties' from pushing into the other columns
-- search debouncing: adding a simple debounce method would lower the number of potential API calls and improve the user experience by preventing jumping. I would keep it to a lower value to maintain a snappy user experience, ~200ms.
 - loading and error states: display a loading spinner while data is fetching. Show friendly error messages if API calls fail.
 
 ### Backend
